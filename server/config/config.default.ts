@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg';
 
 export default (appInfo: EggAppInfo) => {
@@ -15,9 +16,15 @@ export default (appInfo: EggAppInfo) => {
     sourceUrl: `https://github.com/eggjs/examples/tree/master/${appInfo.name}`,
   };
 
+  // mongodb config
+  const mongoConfig = {
+    mongoUrl: process.env.MONGODB_URL || '',
+  };
+
   // the return config will combines to EggAppConfig
   return {
     ...config,
     ...bizConfig,
+    ...mongoConfig,
   };
 };
