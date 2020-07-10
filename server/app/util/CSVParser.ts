@@ -1,7 +1,7 @@
 export class CSV {
-  private _data: string[][] | undefined;
+  private _data: string[][];
 
-  constructor(data?: string[][]) {
+  constructor(data: string[][]) {
     this._data = data;
   }
 
