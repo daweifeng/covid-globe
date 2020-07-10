@@ -1,4 +1,5 @@
 import { Service } from 'egg';
+import { CSVParser } from '../util/CSVParser';
 
 export default class Data extends Service {
 
@@ -22,5 +23,13 @@ export default class Data extends Service {
       us: responseUS.data,
       global: responseGolbal.data,
     };
+  }
+
+  public store(data: string, db: string, collection: string) {
+    const csvParser = new CSVParser();
+    const csv = csvParser.parse(data);
+
+    return this.ctx.service.mongo.insertManyCSVRows(db, collection, csv.data.slice(1, csv.data.length), csv.header);
+
   }
 }
