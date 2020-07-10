@@ -32,4 +32,18 @@ describe('test/app/service/Mongo.test.js', () => {
     assert(response.result.ok);
     assert(response.ops[0].name === 'David');
   });
+
+  it('insertManyCSVRows', async () => {
+    const db = 'test';
+    const collection = 'student';
+    const header = [ 'name', 'school', 'major' ];
+    const rows = [
+      [ 'David', 'UCB', 'EECS' ],
+      [ 'Jason', 'UCLA', 'Math' ],
+    ];
+
+    const response = await ctx.service.mongo.insertManyCSVRows(db, collection, rows, header);
+    assert(response.result.ok);
+    assert(response.ops[0].name === 'David');
+  });
 });

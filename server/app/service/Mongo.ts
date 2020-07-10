@@ -21,12 +21,28 @@ export default class Mongo extends Service {
     return Mongo.client.isConnected();
   }
 
-  async insertCSVRow(db: string, collection: string, row: string[], header: string[]) {
+  // Insert one csv row to collection
+  insertCSVRow(db: string, collection: string, row: string[], header: string[]) {
     const doc = {};
     header.forEach((h, i) => {
       doc[h] = row[i];
     });
-    const response = await Mongo.client.db(db).collection(collection).insertOne(doc);
+    const response = Mongo.client.db(db).collection(collection).insertOne(doc);
+    return response;
+  }
+
+  // Insert many row to collection
+  insertManyCSVRows(db: string, collection: string, rows: string[][], header: string[]) {
+    const docs = rows.map(row => {
+      const doc = {};
+      header.forEach((h, i) => {
+        doc[h] = row[i];
+      });
+      return doc;
+    });
+
+    const response = Mongo.client.db(db).collection(collection).insertMany(docs);
+
     return response;
   }
 }
