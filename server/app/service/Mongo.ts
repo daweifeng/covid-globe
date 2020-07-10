@@ -20,4 +20,13 @@ export default class Mongo extends Service {
   get isConnected() {
     return Mongo.client.isConnected();
   }
+
+  async insertCSVRow(db: string, collection: string, row: string[], header: string[]) {
+    const doc = {};
+    header.forEach((h, i) => {
+      doc[h] = row[i];
+    });
+    const response = await Mongo.client.db(db).collection(collection).insertOne(doc);
+    return response;
+  }
 }

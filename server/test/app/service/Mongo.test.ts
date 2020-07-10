@@ -22,4 +22,14 @@ describe('test/app/service/Mongo.test.js', () => {
     assert(ctx.service.mongo.isConnected);
   });
 
+  it('insertCSVRow', async () => {
+    const db = 'test';
+    const collection = 'student';
+    const header = [ 'name', 'school', 'major' ];
+    const row = [ 'David', 'UCB', 'EECS' ];
+
+    const response = await ctx.service.mongo.insertCSVRow(db, collection, row, header);
+    assert(response.result.ok);
+    assert(response.ops[0].name === 'David');
+  });
 });
