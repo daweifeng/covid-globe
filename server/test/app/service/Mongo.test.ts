@@ -46,4 +46,11 @@ describe('test/app/service/Mongo.test.js', () => {
     assert(response.result.ok);
     assert(response.ops[0].name === 'David');
   });
+
+  it('isCollectionExist', async () => {
+    const db = 'test';
+    const collection = 'student';
+
+    assert(await ctx.service.mongo.isCollectionExist(db, collection));
+  });
 });

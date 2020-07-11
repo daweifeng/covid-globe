@@ -21,6 +21,15 @@ export default class Mongo extends Service {
     return Mongo.client.isConnected();
   }
 
+  async isCollectionExist(db: string, collection: string) {
+    const index = (await Mongo.client.db(db).listCollections().toArray()).map(c => c.name).indexOf(collection);
+    return index !== -1;
+  }
+
+  dropCollection(db: string, collection: string) {
+    return Mongo.client.db(db).collection(collection).drop();
+  }
+
   // Insert one csv row to collection
   insertCSVRow(db: string, collection: string, row: string[], header: string[]) {
     const doc = {};
