@@ -25,4 +25,11 @@ describe('test/app/service/Data.test.js', () => {
     assert(response.result.ok);
     assert(response.ops[0].name === 'Kevin');
   });
+
+  it('getCasesByDate', async () => {
+    const date = new Date(1593635323000);
+    const response = await ctx.service.data.getCasesByDate(date);
+
+    assert(response.usResponse[0].Country_Region === 'US');
+  });
 });

@@ -1,5 +1,6 @@
 import { Service } from 'egg';
 import { CSVParser } from '../util/CSVParser';
+import Mongo from './Mongo';
 
 export default class Data extends Service {
 
@@ -31,5 +32,26 @@ export default class Data extends Service {
 
     return this.ctx.service.mongo.insertManyCSVRows(db, collection, csv.data.slice(1, csv.data.length), csv.header);
 
+  }
+
+  public async getCasesByDate(date: Date) {
+    const today = new Date();
+    const collectionDate = `${today.getMonth() + 1}${today.getDate()}${today.getFullYear()}`;
+    const dateStr = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear() - 2000}`;
+    const usResponse = await Mongo.client
+      .db('covid')
+      .collection(`US${collectionDate}`)
+      .find()
+      .project({ Province_State: 1, Country_Region: 1, Lat: 1, Long_: 1, [dateStr]: 1 })
+      .toArray();
+
+    const globalResponse = await Mongo.client
+      .db('covid')
+      .collection(`GLOBAL${collectionDate}`)
+      .find()
+      .project({ 'Province/State': 1, 'Country/Region': 1, Lat: 1, Long: 1, [dateStr]: 1 })
+      .toArray();
+
+    return { usResponse, globalResponse };
   }
 }
