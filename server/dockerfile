@@ -1,5 +1,7 @@
 FROM node:12.18.1-alpine AS build
 
+RUN apk --no-cache add ca-certificates
+
 WORKDIR /app/covid-globe-server
 
 ENV PATH /app/covid-globe-server/node_modules/.bin:$PATH
