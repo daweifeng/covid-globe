@@ -1,0 +1,17 @@
+FROM node:12.18.1-alpine AS build
+
+WORKDIR /app/covid-globe-server
+
+ENV PATH /app/covid-globe-server/node_modules/.bin:$PATH
+
+COPY package*.json ./
+
+RUN npm install 
+
+COPY . ./
+
+RUN npm run ci
+
+
+EXPOSE 7001
+CMD [ "npm", "start" ]

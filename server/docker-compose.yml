@@ -1,0 +1,16 @@
+version: "2"
+services: 
+  covid-globe-server:
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    env_file: .env
+    environment: 
+      - VIRTUAL_HOST=covid-globe-server.dawei.io
+      - LETSENCRYPT_HOST=covid-globe-server.dawei.io
+      - VIRTUAL_PORT=80
+networks: 
+  default:
+    external: 
+      name: nginx-proxy
