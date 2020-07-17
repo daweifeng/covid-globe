@@ -36,8 +36,8 @@ export default class Data extends Service {
 
   public async getCasesByDate(date: Date) {
     const today = new Date();
-    const collectionDate = `${today.getMonth() + 1}${today.getDate()}${today.getFullYear()}`;
-    const dateStr = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear() - 2000}`;
+    const collectionDate = `${today.getUTCMonth() + 1}${today.getUTCDate()}${today.getUTCFullYear()}`;
+    const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
     const usResponse = await Mongo.client
       .db('covid')
       .collection(`US${collectionDate}`)

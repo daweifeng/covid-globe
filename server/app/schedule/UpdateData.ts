@@ -16,9 +16,10 @@ export default class UpdateData extends Subscription {
     const data = await this.ctx.service.data.fetch();
     const today = new Date();
     const yesterday = new Date();
-    yesterday.setDate(today.getDate() - 1);
-    const dateStr = `${today.getMonth() + 1}${today.getDate()}${today.getFullYear()}`;
-    const preDateStr = `${yesterday.getMonth() + 1}${yesterday.getDate()}${yesterday.getFullYear()}`;
+    yesterday.setDate(today.getUTCDate() - 1);
+    const dateStr = `${today.getUTCMonth() + 1}${today.getUTCDate()}${today.getUTCFullYear()}`;
+    console.log(dateStr);
+    const preDateStr = `${yesterday.getUTCMonth() + 1}${yesterday.getUTCDate()}${yesterday.getUTCFullYear()}`;
 
     if (!await mongo.isCollectionExist('covid', `US${dateStr}`)) {
       const responseUS = await this.ctx.service.data.store(data.us, 'covid', `US${dateStr}`);

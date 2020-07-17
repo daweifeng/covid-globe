@@ -1,4 +1,4 @@
-// import * as assert from 'assert';
+import * as assert from 'assert';
 import { app } from 'egg-mock/bootstrap';
 
 describe('test/app/controller/cases.test.ts', () => {
@@ -11,8 +11,8 @@ describe('test/app/controller/cases.test.ts', () => {
   it('should GET /cases/confirmed', async () => {
     const today = new Date();
     const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 4);
+    yesterday.setDate(today.getUTCDate() - 2);
     const result = await app.httpRequest().get(`/cases/confirmed?ts=${yesterday.getTime()}`).expect(200);
-    console.log(result.body);
+    assert(result.body.usResponse[0].Country_Region === 'US');
   });
 });
