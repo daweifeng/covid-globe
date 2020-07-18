@@ -32,35 +32,38 @@
     }
     const globe = new DAT.Globe(container, opts)
 
-    fetch('07-04-2020.csv')
-      .then(response => response.text())
-      .then(csv => {
-        const data = processCSV(csv)
-        console.log(data)
+    const today = new Date();
+    const date = new Date(today);
+    date.setUTCDate(date.getUTCDate() - 2);
+
+    fetch(`https://covid-server.dawei.io/cases/confirmed?ts=${date.getTime()}`)
+      .then(response => response.json())
+      .then(data => {
+        const { usResponse, globalResponse } = data
+        // console.log(data)
         // Add data to globe
-        for ( var i = 0; i < data.length; i ++ ) {
-            globe.addData( data[i][1], {format: 'magnitude', name: data[i][0]} );
-        }
+        const usData = processData(usResponse, date, true)
+        const globalData = processData(globalResponse, date, false);
+        const combinedData = [date.toUTCString(), [...usData, ...globalData]];
+        
+        globe.addData( combinedData[1], {format: 'magnitude', name: combinedData[0]} );
+        
         // Create the geometry
         globe.createPoints();
         // Begin animation
         globe.animate();
       })
       
-    const processCSV = (csvFile) => {
-      const allLines = csvFile.split(/\r\n|\n/)
-      const headings = allLines[0].split(',')
-      const date = moment(allLines[1].split(',')[4])
-      console.log(date.format('LL'))
-      const data = [['07-04-2020', []]]
+    const processData = (dataObjArr, date, isUS) => {
+      let data = [];
+      const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
 
-      for (let i=1; i<allLines.length; i++) {
-        const currentLine = allLines[i].split(',')
-        const lat = currentLine[5]
-        const long = currentLine[6]
-        const confimedCases = currentLine[7]
-        data[0][1] = data[0][1].concat([parseFloat(lat), parseFloat(long), confimedCases*0.000005])
-      }
+      dataObjArr.forEach(obj => {
+        const lat = obj['Lat'];
+        const long = isUS ? obj['Long_'] : obj['Long'];
+        const confimedCases = obj[dateStr]
+        data = data.concat([parseFloat(lat), parseFloat(long), confimedCases*0.000005])
+      })
       return data
     }
     
