@@ -21,10 +21,16 @@ export default (appInfo: EggAppInfo) => {
     mongoUrl: process.env.MONGODB_URL || '',
   };
 
+  // cors
+  const cors = {
+    origin: '*',
+  };
+
   // the return config will combines to EggAppConfig
   return {
     ...config,
     ...bizConfig,
     ...mongoConfig,
+    cors,
   };
 };
