@@ -7,20 +7,31 @@ html {
 body {
   position: relative;
   padding: 0;
+  height: 100vh;
   background-color: #000;
 }
 
-h1 {
+.header {
   position: absolute;
   color: #fff;
-  text-align: center;
+  text-align: left;
   top: 0;
   left: 0;
 }
 
 #container {
   position: absolute;
-  height: 100vh;
+  height: 100%;
   top: 0;
   left: 0;
+}
+
+.color-info {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+
+.color-info > div {
+  padding: 12px;
 }

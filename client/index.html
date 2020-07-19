@@ -8,65 +8,29 @@
 </head>
 <body>
   <div id="container"></div>
-  <h1>COVID-19 Confirmed Cases on July 4th 2020</h1>
+  <div class="header">
+    <h1>COVID-19 Confirmed Cases on <span id="date-show"></span></h1>
+    <div>
+      Choose a date:
+      <input type="date" id="chosen-date" name="chosen-date" min="2020-01-22" />
+      <button onclick="onRenderClick()">Render</button>
+    </div>
+  </div>
+
+  <div class="color-info">
+    <div class="SEVERE"> > 500000</div>
+    <div class="DANGER"> > 100000</div>
+    <div class="MODERATE"> > 10000</div>
+    <div class="MILE"> > 1000</div>
+    <div class="LOW"> >= 0</div>
+  </div class="color-info">
+  
 
   <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
   <script type="text/javascript" src="./lib/Detector.js"></script>
   <script type="text/javascript" src="./lib/three.min.js"></script>
   <script type="text/javascript" src="./lib/globe.js"></script>
 
-  <script type="text/javascript">
-
-    const container = document.querySelector("#container");
-    const colorFunc = (x) => {
-      const c = new THREE.Color();
-      x = x * 200000
-      
-      // The more cases, the darken it is going to be
-      c.setHSL( (1 - ((x-1)/(300000-10))) *0.20, 1, 0.5)
-      return c
-    }
-    const opts = {
-      imgDir: './',
-      colorFn: colorFunc
-    }
-    const globe = new DAT.Globe(container, opts)
-
-    const today = new Date();
-    const date = new Date(today);
-    date.setUTCDate(date.getUTCDate() - 2);
-
-    fetch(`https://covid-server.dawei.io/cases/confirmed?ts=${date.getTime()}`)
-      .then(response => response.json())
-      .then(data => {
-        const { usResponse, globalResponse } = data
-        // console.log(data)
-        // Add data to globe
-        const usData = processData(usResponse, date, true)
-        const globalData = processData(globalResponse, date, false);
-        const combinedData = [date.toUTCString(), [...usData, ...globalData]];
-        
-        globe.addData( combinedData[1], {format: 'magnitude', name: combinedData[0]} );
-        
-        // Create the geometry
-        globe.createPoints();
-        // Begin animation
-        globe.animate();
-      })
-      
-    const processData = (dataObjArr, date, isUS) => {
-      let data = [];
-      const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
-
-      dataObjArr.forEach(obj => {
-        const lat = obj['Lat'];
-        const long = isUS ? obj['Long_'] : obj['Long'];
-        const confimedCases = obj[dateStr]
-        data = data.concat([parseFloat(lat), parseFloat(long), confimedCases*0.000005])
-      })
-      return data
-    }
-    
-  </script>
+  <script type="text/javascript" src="./js/main.js"></script>
 </body>
 </html>
