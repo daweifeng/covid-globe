@@ -1,6 +1,6 @@
 version: "2"
 services: 
-  airfile-client:
+  covid-globe-client:
     restart: always
     build: 
       dockerfile: Dockerfile
