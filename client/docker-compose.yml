@@ -1,0 +1,15 @@
+version: "2"
+services: 
+  airfile-client:
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    environment: 
+      - VIRTUAL_HOST=covid-globe.dawei.io
+      - LETSENCRYPT_HOST=covid-globe.dawei.io
+      - VIRTUAL_PORT=80
+networks: 
+  default:
+    external: 
+      name: nginx-proxy
