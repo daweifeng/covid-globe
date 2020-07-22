@@ -56,3 +56,8 @@ timestamp: the UTC timestamp of the date
   ]
 }
 ```
+
+## Todos
+
+- [ ] Add finger guesture feature for better user interaction on mobile browser
+- [ ] Add 'Recovered Cases' route
