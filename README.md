@@ -37,7 +37,8 @@ timestamp: the UTC timestamp of the date
       "Country_Region": "US",
       "Lat": "-14.271",
       "Long_": "-170.132",
-      "7/16/20": "0" //Date
+      // Specific date from request
+      "7/16/20": "0" 
     },
     ...
   ],
@@ -48,6 +49,7 @@ timestamp: the UTC timestamp of the date
       "Country/Region": "Afghanistan",
       "Lat": "33.93911",
       "Long": "67.709953",
+      // Specific date from request
       "7/16/20": "35070"
     },
     ...
