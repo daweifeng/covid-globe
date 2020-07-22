@@ -60,4 +60,5 @@ timestamp: the UTC timestamp of the date
 ## Todos
 
 - [ ] Add finger guesture feature for better user interaction on mobile browser
+- [ ] Use Redis for data caching
 - [ ] Add 'Recovered Cases' route
