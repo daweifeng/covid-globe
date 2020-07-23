@@ -372,9 +372,10 @@ DAT.Globe = function(container, opts) {
   }
 
   function onWindowResize( event ) {
-    camera.aspect = container.offsetWidth / container.offsetHeight;
+    camera.aspect = (container.offsetWidth || window.innerWidth) / container.offsetHeight;
+    
     camera.updateProjectionMatrix();
-    renderer.setSize( container.offsetWidth, container.offsetHeight );
+    renderer.setSize( container.offsetWidth || window.innerWidth, container.offsetHeight );
   }
 
   function zoom(delta) {
