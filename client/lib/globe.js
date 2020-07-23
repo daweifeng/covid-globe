@@ -85,6 +85,7 @@ DAT.Globe = function(container, opts) {
       targetOnDown = { x: 0, y: 0 };
 
   var distance = 100000, distanceTarget = 100000;
+  let distanceZoomMax = window.innerWidth < 500 ? 1500 : 1000
   var padding = 40;
   var PI_HALF = Math.PI / 2;
 
@@ -379,8 +380,9 @@ DAT.Globe = function(container, opts) {
   }
 
   function zoom(delta) {
+    console.log(distanceTarget, delta)
     distanceTarget -= delta;
-    distanceTarget = distanceTarget > 1000 ? 1000 : distanceTarget;
+    distanceTarget = distanceTarget > distanceZoomMax ? distanceZoomMax : distanceTarget;
     distanceTarget = distanceTarget < 350 ? 350 : distanceTarget;
   }
 
