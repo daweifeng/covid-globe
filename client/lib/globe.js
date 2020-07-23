@@ -153,6 +153,8 @@ DAT.Globe = function(container, opts) {
 
     container.addEventListener('mousedown', onMouseDown, false);
 
+    container.addEventListener('touchstart', onTouchStart, false);
+
     container.addEventListener('mousewheel', onMouseWheel, false);
 
     document.addEventListener('keydown', onDocumentKeyDown, false);
@@ -279,9 +281,23 @@ DAT.Globe = function(container, opts) {
     container.addEventListener('mousemove', onMouseMove, false);
     container.addEventListener('mouseup', onMouseUp, false);
     container.addEventListener('mouseout', onMouseOut, false);
-
     mouseOnDown.x = - event.clientX;
     mouseOnDown.y = event.clientY;
+
+    targetOnDown.x = target.x;
+    targetOnDown.y = target.y;
+
+    container.style.cursor = 'move';
+  }
+
+  function onTouchStart(event) {
+    event.preventDefault();
+
+    container.addEventListener('touchmove', onTouchMove, false);
+    container.addEventListener('touchend', onTouchEnd, false);
+    
+    mouseOnDown.x = - event.touches[0].clientX;
+    mouseOnDown.y = event.touches[0].clientY;
 
     targetOnDown.x = target.x;
     targetOnDown.y = target.y;
@@ -302,10 +318,29 @@ DAT.Globe = function(container, opts) {
     target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
   }
 
+  function onTouchMove(event) {
+    mouse.x = - event.touches[0].clientX;
+    mouse.y = event.touches[0].clientY;
+    
+    var zoomDamp = distance/1000;
+
+    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
+    target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
+
+    target.y = target.y > PI_HALF ? PI_HALF : target.y;
+    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
+  }
+
   function onMouseUp(event) {
     container.removeEventListener('mousemove', onMouseMove, false);
     container.removeEventListener('mouseup', onMouseUp, false);
     container.removeEventListener('mouseout', onMouseOut, false);
+    container.style.cursor = 'auto';
+  }
+
+  function onTouchEnd(event) {
+    container.removeEventListener('touchmove', onTouchMove, false);
+    container.removeEventListener('touchend', onTouchEnd, false)
     container.style.cursor = 'auto';
   }
 
