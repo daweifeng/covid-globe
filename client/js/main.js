@@ -66,6 +66,9 @@ const processData = (dataObjArr, date, isUS) => {
   const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
 
   dataObjArr.forEach(obj => {
+    if (obj[dateStr] === '0') {
+      return;
+    }
     const lat = obj['Lat'];
     const long = isUS ? obj['Long_'] : obj['Long'];
     const confimedCases = obj[dateStr]
