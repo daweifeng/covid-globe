@@ -380,7 +380,6 @@ DAT.Globe = function(container, opts) {
   }
 
   function zoom(delta) {
-    console.log(distanceTarget, delta)
     distanceTarget -= delta;
     distanceTarget = distanceTarget > distanceZoomMax ? distanceZoomMax : distanceTarget;
     distanceTarget = distanceTarget < 350 ? 350 : distanceTarget;
