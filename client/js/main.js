@@ -77,7 +77,7 @@ const processData = (dataObjArr, date, isUS) => {
   return data
 }
 
-const onRenderClick = () => {
+const onDateChange = () => {
   const chosenDate = document.querySelector('#chosen-date');
   const date = new Date(chosenDate.value);
 
