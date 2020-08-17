@@ -5,13 +5,17 @@
   <img src="https://daweifeng.s3-us-west-2.amazonaws.com/public/app_images/covid-globe-1.png"/>
 </div>
 
+## Multifingers support
+This app natively supports multifinger gestures.
+You can pinch your screen to zoom in and out.
+
 ## Data
 
-The time series Data is auto collected every day(UTC) from 
+The time series Data is auto collected every day at 00:01(UTC) from 
 
 <a href="https://github.com/CSSEGISandData/COVID-19">COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University</a>
 
-Collected data is stored on my own MongoDB cluster.
+Collected data is parsed and stored on my own MongoDB cluster.
 
 ## API
 
@@ -59,6 +63,5 @@ timestamp: the UTC timestamp of the date
 
 ## Todos
 
-- [ ] Add finger guesture feature for better user interaction on mobile browser
 - [ ] Use Redis for data caching
 - [ ] Add 'Recovered Cases' route
