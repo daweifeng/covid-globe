@@ -84,10 +84,15 @@ DAT.Globe = function(container, opts) {
       target = { x: Math.PI*3/2, y: Math.PI / 6.0 },
       targetOnDown = { x: 0, y: 0 };
 
-  var distance = 100000, distanceTarget = 100000;
+  let distance = 100000, distanceTarget = 100000;
   let distanceZoomMax = window.innerWidth < 500 ? 1500 : 1000
-  var padding = 40;
-  var PI_HALF = Math.PI / 2;
+  let padding = 40;
+  let PI_HALF = Math.PI / 2;
+
+  let evCache = new Array();
+  let prevDiff = -1;
+  let prevTime = 0;
+
 
   function init() {
 
@@ -152,7 +157,13 @@ DAT.Globe = function(container, opts) {
 
     container.appendChild(renderer.domElement);
 
-    container.addEventListener('mousedown', onMouseDown, false);
+    container.addEventListener('pointerdown', onPointerDown, false);
+    container.addEventListener('pointermove', onPointerMove, false);
+    container.addEventListener('pointerup', onPointerUp, false);
+    container.addEventListener('pointercancel', onPointerUp, false);
+    container.addEventListener('pointerout', onPointerUp, false);
+    container.addEventListener('pointerleave', onPointerUp, false);
+    
 
     container.addEventListener('touchstart', onTouchStart, false);
 
@@ -276,12 +287,23 @@ DAT.Globe = function(container, opts) {
     subgeo.merge(point.geometry, point.matrix);
   }
 
-  function onMouseDown(event) {
+  function onTouchStart(event) {
     event.preventDefault();
 
-    container.addEventListener('mousemove', onMouseMove, false);
-    container.addEventListener('mouseup', onMouseUp, false);
-    container.addEventListener('mouseout', onMouseOut, false);
+    container.addEventListener('touchend', onTouchEnd, false);
+  }
+
+  function onPointerDown(event) { 
+    event.preventDefault();
+  
+    evCache.push(event);
+
+    if (evCache.length === 2) {
+      // Set initial diff and time
+      prevDiff = Math.abs(evCache[0].clientX - evCache[1].clientX);
+      prevTime = event.timeStamp;
+    }
+
     mouseOnDown.x = - event.clientX;
     mouseOnDown.y = event.clientY;
 
@@ -291,64 +313,60 @@ DAT.Globe = function(container, opts) {
     container.style.cursor = 'move';
   }
 
-  function onTouchStart(event) {
-    event.preventDefault();
+  function onPointerMove(event) {
+    for (var i = 0; i < evCache.length; i++) {
+      if (event.pointerId == evCache[i].pointerId) {
+         evCache[i] = event;
+      break;
+      }
+    }
 
-    container.addEventListener('touchmove', onTouchMove, false);
-    container.addEventListener('touchend', onTouchEnd, false);
+    const curTime = event.timeStamp;
+    const timeDiff = curTime - prevTime;
     
-    mouseOnDown.x = - event.touches[0].clientX;
-    mouseOnDown.y = event.touches[0].clientY;
+    // Two finger moving
+    if (evCache.length === 2) {
+      let curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX);
+      const zoomScale = 10*(curDiff - prevDiff)/timeDiff;
+      if (prevDiff > 0) {
+        if (curDiff > prevDiff) {
+          // The distance between the two pointers has increased
+          zoom(zoomScale > 20 ? 20 : zoomScale)
+        }
+        if (curDiff < prevDiff) {
+          // The distance between the two pointers has decreased
+          zoom(zoomScale < -20 ? -20 : zoomScale)
+        }
+      }
+    }
 
-    targetOnDown.x = target.x;
-    targetOnDown.y = target.y;
+    // One finger moving
+    if (evCache.length === 1) {
+      mouse.x = - event.clientX;
+      mouse.y = event.clientY;
 
-    container.style.cursor = 'move';
+      var zoomDamp = distance/1000;
+
+      target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
+      target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
+
+      target.y = target.y > PI_HALF ? PI_HALF : target.y;
+      target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
+    }
+
   }
 
-  function onMouseMove(event) {
-    mouse.x = - event.clientX;
-    mouse.y = event.clientY;
-
-    var zoomDamp = distance/1000;
-
-    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
-    target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
-
-    target.y = target.y > PI_HALF ? PI_HALF : target.y;
-    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
-  }
-
-  function onTouchMove(event) {
-    mouse.x = - event.touches[0].clientX;
-    mouse.y = event.touches[0].clientY;
-    
-    var zoomDamp = distance/1000;
-
-    target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
-    target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
-
-    target.y = target.y > PI_HALF ? PI_HALF : target.y;
-    target.y = target.y < - PI_HALF ? - PI_HALF : target.y;
-  }
-
-  function onMouseUp(event) {
-    container.removeEventListener('mousemove', onMouseMove, false);
-    container.removeEventListener('mouseup', onMouseUp, false);
-    container.removeEventListener('mouseout', onMouseOut, false);
+  function onPointerUp(event) {
+    // Empty Cache
+    evCache = [];
     container.style.cursor = 'auto';
   }
 
+  
   function onTouchEnd(event) {
     container.removeEventListener('touchmove', onTouchMove, false);
     container.removeEventListener('touchend', onTouchEnd, false)
     container.style.cursor = 'auto';
-  }
-
-  function onMouseOut(event) {
-    container.removeEventListener('mousemove', onMouseMove, false);
-    container.removeEventListener('mouseup', onMouseUp, false);
-    container.removeEventListener('mouseout', onMouseOut, false);
   }
 
   function onMouseWheel(event) {
