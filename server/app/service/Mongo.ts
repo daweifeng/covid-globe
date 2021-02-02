@@ -41,10 +41,23 @@ export default class Mongo extends Service {
   }
 
   // Insert many row to collection
-  insertManyCSVRows(db: string, collection: string, rows: string[][], header: string[]) {
+  insertManyCSVRows(db: string, collection: string, rows: string[][], header: string[], shouldAddLocation?: boolean) {
     const docs = rows.map(row => {
-      const doc = {};
+      const doc = {
+        location: {
+          type: 'Point',
+          coordinates: [] as number[],
+        },
+      };
       header.forEach((h, i) => {
+        if (shouldAddLocation) {
+          if (h === 'Long_' || h === 'Long') {
+            doc.location.coordinates[0] = parseFloat(row[i]);
+          }
+          if (h === 'Lat') {
+            doc.location.coordinates[1] = parseFloat(row[i]);
+          }
+        }
         doc[h] = row[i];
       });
       return doc;
