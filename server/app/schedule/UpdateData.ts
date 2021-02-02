@@ -15,8 +15,8 @@ export default class UpdateData extends Subscription {
     const { mongo } = this.ctx.service;
     const data = await this.ctx.service.data.fetch();
     const today = new Date();
-    const yesterday = new Date();
-    yesterday.setDate(today.getUTCDate() - 1);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
     const dateStr = `${today.getUTCMonth() + 1}${today.getUTCDate()}${today.getUTCFullYear()}`;
     console.log(dateStr);
     const preDateStr = `${yesterday.getUTCMonth() + 1}${yesterday.getUTCDate()}${yesterday.getUTCFullYear()}`;
