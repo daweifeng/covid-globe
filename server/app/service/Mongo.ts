@@ -58,13 +58,23 @@ export default class Mongo extends Service {
             doc.location.coordinates[1] = parseFloat(row[i]);
           }
         }
+        if (row[i] == null) {
+          return;
+        }
         doc[h] = row[i];
       });
+      if (!doc.location.coordinates[0]) {
+        return {};
+      }
       return doc;
     });
 
     const response = Mongo.client.db(db).collection(collection).insertMany(docs);
 
     return response;
+  }
+
+  createLocationIndex(db: string, collection: string) {
+    return Mongo.client.db(db).collection(collection).createIndex({ location: '2dsphere' });
   }
 }
