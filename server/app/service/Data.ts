@@ -53,4 +53,31 @@ export default class Data extends Service {
 
     return { usResponse, globalResponse };
   }
+
+  public async getDailyCasesByLocation(lat: number, long: number, date: Date) {
+    const today = new Date();
+    const theDayBefore = new Date(date);
+    theDayBefore.setDate(date.getDate() - 1);
+    const collectionDate = `${today.getUTCMonth() + 1}${today.getUTCDate()}${today.getUTCFullYear()}`;
+    const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
+    const preDateStr = `${theDayBefore.getUTCMonth() + 1}/${theDayBefore.getUTCDate()}/${theDayBefore.getUTCFullYear() - 2000}`;
+
+    const usResponse = await Mongo.client
+      .db('covid')
+      .collection(`US${collectionDate}`)
+      .find({
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [ long, lat ],
+            },
+            $maxDistance: 50000, // 50km
+          },
+        },
+      })
+      .project({ Admin2: 1, Province_State: 1, Country_Region: 1, Combined_Key: 1, Lat: 1, Long_: 1, [dateStr]: 1, [preDateStr]: 1 })
+      .toArray();
+    return usResponse;
+  }
 }
