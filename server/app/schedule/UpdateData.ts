@@ -22,7 +22,7 @@ export default class UpdateData extends Subscription {
     const preDateStr = `${yesterday.getUTCMonth() + 1}${yesterday.getUTCDate()}${yesterday.getUTCFullYear()}`;
 
     if (!await mongo.isCollectionExist('covid', `US${dateStr}`)) {
-      const responseUS = await this.ctx.service.data.store(data.us, 'covid', `US${dateStr}`);
+      const responseUS = await this.ctx.service.data.store(data.us, 'covid', `US${dateStr}`, true);
       if (responseUS.result.ok) {
         // Create location index
         await mongo.createLocationIndex('covid', `US${dateStr}`);
@@ -33,7 +33,7 @@ export default class UpdateData extends Subscription {
       }
     }
     if (!await mongo.isCollectionExist('covid', `GLOBAL${dateStr}`)) {
-      const responseGlobal = await this.ctx.service.data.store(data.global, 'covid', `GLOBAL${dateStr}`);
+      const responseGlobal = await this.ctx.service.data.store(data.global, 'covid', `GLOBAL${dateStr}`, true);
       if (responseGlobal.result.ok) {
         // Create location index
         await mongo.createLocationIndex('covid', `GLOBAL${dateStr}`);

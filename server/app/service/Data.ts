@@ -26,11 +26,11 @@ export default class Data extends Service {
     };
   }
 
-  public store(data: string, db: string, collection: string) {
+  public store(data: string, db: string, collection: string, shouldAddLocation?: boolean) {
     const csvParser = new CSVParser();
     const csv = csvParser.parse(data);
 
-    return this.ctx.service.mongo.insertManyCSVRows(db, collection, csv.data.slice(1, csv.data.length), csv.header, true);
+    return this.ctx.service.mongo.insertManyCSVRows(db, collection, csv.data.slice(1, csv.data.length), csv.header, shouldAddLocation);
   }
 
   public async getCasesByDate(date: Date) {

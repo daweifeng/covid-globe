@@ -20,7 +20,7 @@ describe('test/app/service/Data.test.js', () => {
     const data = 'name,school\nKevin,UCB';
     const db = 'test';
     const collection = 'student';
-    const response = await ctx.service.data.store(data, db, collection);
+    const response = await ctx.service.data.store(data, db, collection, false);
 
     assert(response.result.ok);
     assert(response.ops[0].name === 'Kevin');
