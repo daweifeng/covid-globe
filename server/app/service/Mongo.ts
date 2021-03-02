@@ -63,7 +63,7 @@ export default class Mongo extends Service {
         }
         doc[h] = row[i];
       });
-      if (!doc.location.coordinates[0]) {
+      if (!doc.location.coordinates[0] || typeof doc.location.coordinates[0] !== 'number') {
         return {};
       }
       return doc;
