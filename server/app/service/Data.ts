@@ -62,6 +62,8 @@ export default class Data extends Service {
     const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
     const preDateStr = `${theDayBefore.getUTCMonth() + 1}/${theDayBefore.getUTCDate()}/${theDayBefore.getUTCFullYear() - 2000}`;
 
+    // TODO: Check the country of the location
+    // If it is not US, display the country data
     const usResponse = await Mongo.client
       .db('covid')
       .collection(`US${collectionDate}`)
@@ -77,6 +79,48 @@ export default class Data extends Service {
         },
       })
       .project({ Admin2: 1, Province_State: 1, Country_Region: 1, Combined_Key: 1, Lat: 1, Long_: 1, [dateStr]: 1, [preDateStr]: 1 })
+      .toArray();
+    return usResponse;
+  }
+
+  public async getSevenDayCases(lat: number, long: number, date: Date) {
+    const today = new Date();
+    const collectionDate = `${today.getUTCMonth() + 1}${today.getUTCDate()}${today.getUTCFullYear()}`;
+    const dataProjection = {
+      Admin2: 1,
+      Province_State: 1,
+      Country_Region: 1,
+      Combined_Key: 1,
+      Lat: 1,
+      Long_: 1,
+    }
+    // TODO: When date col not exists, find the latest day
+    for (let day = 0; day<7; day++) {
+      const theDay = new Date(date);
+      theDay.setDate(date.getDate() - day);
+      const theDayStr = `${theDay.getUTCMonth() + 1}/${theDay.getUTCDate()}/${theDay.getUTCFullYear() - 2000}`;
+      dataProjection[theDayStr] = 1;
+    }
+
+    // TODO: Check the country of the location
+    // If it is not US, display the country data
+
+    // TODO: Cross reference FCC's county data
+    const usResponse = await Mongo.client
+      .db('covid')
+      .collection(`US${collectionDate}`)
+      .find({
+        location: {
+          $near: {
+            $geometry: {
+              type: 'Point',
+              coordinates: [ long, lat ],
+            },
+            $maxDistance: 50000, // 50km
+          },
+        },
+      })
+      .project(dataProjection)
       .toArray();
     return usResponse;
   }

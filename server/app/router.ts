@@ -6,4 +6,5 @@ export default (app: Application) => {
   router.get('/', controller.home.index);
   router.get('/cases/confirmed', controller.cases.confirmed);
   router.get('/cases/confirmedByLocation', controller.cases.confirmedCasesBylocation);
+  router.get('/cases/confirmedSevenDay', controller.cases.cofirmedCasesSevenDays);
 };

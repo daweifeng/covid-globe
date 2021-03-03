@@ -18,4 +18,12 @@ export default class CasesController extends Controller {
 
     ctx.body = res;
   }
+
+  public async cofirmedCasesSevenDays() {
+    const { ctx } = this;
+    const { lat, long, ts } = ctx.query;
+    const res = await ctx.service.data.getSevenDayCases(parseFloat(lat), parseFloat(long), new Date(parseInt(ts)));
+
+    ctx.body = res;
+  }
 }
