@@ -7,7 +7,7 @@ export default class Data extends Service {
   dataURLs = {
     us: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv',
     global: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
-  }
+  };
 
   public async fetch() {
 
@@ -93,9 +93,9 @@ export default class Data extends Service {
       Combined_Key: 1,
       Lat: 1,
       Long_: 1,
-    }
+    };
     // TODO: When date col not exists, find the latest day
-    for (let day = 0; day<7; day++) {
+    for (let day = 0; day < 7; day++) {
       const theDay = new Date(date);
       theDay.setDate(date.getDate() - day);
       const theDayStr = `${theDay.getUTCMonth() + 1}/${theDay.getUTCDate()}/${theDay.getUTCFullYear() - 2000}`;
