@@ -31,6 +31,13 @@ export default class UpdateData extends Subscription {
         // drop previous collection
         await mongo.dropCollection('covid', `US${preDateStr}`);
       }
+    } else {
+      await mongo.dropCollection('covid', `US${dateStr}`);
+      const responseUS = await this.ctx.service.data.store(data.us, 'covid', `US${dateStr}`, true);
+      if (responseUS.result.ok) {
+        // Create location index
+        await mongo.createLocationIndex('covid', `US${dateStr}`);
+      }
     }
     if (!await mongo.isCollectionExist('covid', `GLOBAL${dateStr}`)) {
       const responseGlobal = await this.ctx.service.data.store(data.global, 'covid', `GLOBAL${dateStr}`, true);
@@ -41,6 +48,13 @@ export default class UpdateData extends Subscription {
       if (responseGlobal.result.ok && await mongo.isCollectionExist('covid', `GLOBAL${preDateStr}`)) {
         // drop previous collection
         await mongo.dropCollection('covid', `GLOBAL${preDateStr}`);
+      }
+    } else {
+      await mongo.dropCollection('covid', `GLOBAL${dateStr}`);
+      const responseGlobal = await this.ctx.service.data.store(data.global, 'covid', `GLOBAL${dateStr}`, true);
+      if (responseGlobal.result.ok) {
+        // Create location index
+        await mongo.createLocationIndex('covid', `GLOBAL${dateStr}`);
       }
     }
   }
