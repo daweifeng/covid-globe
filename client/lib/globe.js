@@ -98,17 +98,16 @@ DAT.Globe = function(container, opts) {
 
   function init() {
 
-    container.style.color = '#fff';
-    container.style.font = '13px/20px Arial, sans-serif';
-
     var shader, uniforms, material;
     w = container.offsetWidth || window.innerWidth;
     h = container.offsetHeight || window.innerHeight;
+    console.log(h)
 
     camera = new THREE.PerspectiveCamera(30, w / h, 1, 10000);
     camera.position.z = distance;
 
     scene = new THREE.Scene();
+    scene.background = null;
 
     var geometry = new THREE.SphereGeometry(200, 40, 30);
 
@@ -152,7 +151,7 @@ DAT.Globe = function(container, opts) {
 
     point = new THREE.Mesh(geometry);
 
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(w, h);
 
     renderer.domElement.style.position = 'absolute';
@@ -395,6 +394,7 @@ DAT.Globe = function(container, opts) {
   }
 
   function onWindowResize( event ) {
+    console.log(container.offsetWidth, container.offsetHeight)
     camera.aspect = (container.offsetWidth || window.innerWidth) / container.offsetHeight;
 
     camera.updateProjectionMatrix();

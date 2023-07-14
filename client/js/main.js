@@ -4,10 +4,6 @@ const DANGER = 26;
 const MODERATE = 50;
 const MILE = 70;
 const LOW = 80;
-const setDateSpan = (date) => {
-  const dateSpan = document.querySelector('#date-show');
-  dateSpan.textContent = date.toUTCString();
-}
 
 const setDatePicker = (date) => {
   const datePicker = document.querySelector('#chosen-date');
@@ -86,7 +82,7 @@ const onDateChange = () => {
 }
 
 const fetchDataAndRender = (date) => {
-  const container = document.querySelector("#container");
+  const container = document.querySelector("#globe-container");
   const opts = {
     imgDir: './',
     colorFn: colorFunc
@@ -113,9 +109,6 @@ const fetchDataAndRender = (date) => {
 }
 
 const date = new Date("2023-03-09");
-
-// Set date span
-setDateSpan(date);
 
 // Init date picker
 setDatePicker(date);
