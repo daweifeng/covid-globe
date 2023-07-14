@@ -8,8 +8,6 @@ ENV PATH /app/covid-globe-server/node_modules/.bin:$PATH
 
 COPY package.json ./
 
-COPY yarn.lock ./
-
 RUN yarn install
 
 COPY . ./
