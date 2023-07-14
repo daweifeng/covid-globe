@@ -35,7 +35,7 @@ const colorFunc = (x) => {
   // console.log(x)
 
   switch (true) {
-    
+
     case x>500000:
       c.setHSL( SEVERE/360, 1, 0.5)
       break;
@@ -60,7 +60,7 @@ const colorFunc = (x) => {
   // The more cases, the darken it is going to be
   return c
 }
-  
+
 const processData = (dataObjArr, date, isUS) => {
   let data = [];
   const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${date.getUTCFullYear() - 2000}`;
@@ -92,7 +92,7 @@ const fetchDataAndRender = (date) => {
     colorFn: colorFunc
   }
   const globe = new DAT.Globe(container, opts)
-  
+
   fetch(`https://covid-server.dawei.io/cases/confirmed?ts=${date.getTime()}`)
   .then(response => response.json())
   .then(data => {
@@ -102,9 +102,9 @@ const fetchDataAndRender = (date) => {
     const usData = processData(usResponse, date, true)
     const globalData = processData(globalResponse, date, false);
     const combinedData = [date.toUTCString(), [...usData, ...globalData]];
-    
+
     globe.addData( combinedData[1], {format: 'magnitude', name: combinedData[0]} );
-    
+
     // Create the geometry
     globe.createPoints();
     // Begin animation
@@ -112,9 +112,7 @@ const fetchDataAndRender = (date) => {
   })
 }
 
-const today = new Date();
-const date = new Date(today);
-date.setUTCDate(date.getUTCDate() - 2);
+const date = new Date("2023-03-09");
 
 // Set date span
 setDateSpan(date);
