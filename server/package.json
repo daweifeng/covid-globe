@@ -24,25 +24,25 @@
   "dependencies": {
     "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
-    "egg": "^2.29.3",
+    "egg": "^3.17.3",
     "egg-cors": "^2.2.3",
-    "egg-scripts": "^2.6.0",
+    "egg-scripts": "^2.17.0",
     "mongodb": "^3.6.4"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.40",
     "@types/mongodb": "^3.6.8",
-    "@types/node": "^14.14.31",
+    "@types/node": "^20.4.2",
     "@types/supertest": "^2.0.0",
-    "autod": "^3.1.1",
+    "autod": "^3.1.2",
     "autod-egg": "^1.1.0",
-    "egg-bin": "^4.11.0",
-    "egg-ci": "^1.18.0",
-    "egg-mock": "^4.0.1",
+    "egg-bin": "^6.4.1",
+    "egg-ci": "^2.2.0",
+    "egg-mock": "^5.10.8",
     "eslint": "^6.7.2",
     "eslint-config-egg": "^9.0.0",
-    "tslib": "^1.14.1",
-    "typescript": "^3.9.9"
+    "tslib": "^2.6.0",
+    "typescript": "^5.1.6"
   },
   "engines": {
     "node": ">=8.9.0"
