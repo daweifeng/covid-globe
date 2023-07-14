@@ -10,7 +10,7 @@
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * It is customized by Dawei Feng
  */
 
@@ -18,7 +18,7 @@ var DAT = DAT || {};
 
 DAT.Globe = function(container, opts) {
   opts = opts || {};
-  
+
   var colorFn = opts.colorFn || function(x) {
     var c = new THREE.Color();
     c.setHSL( ( 0.6 - ( x * 0.5 ) ), 1.0, 0.5 );
@@ -76,8 +76,9 @@ DAT.Globe = function(container, opts) {
 
   var overRenderer;
 
-  var curZoomSpeed = 0;
-  var zoomSpeed = 50;
+  const curZoomSpeed = 0;
+  const zoomSpeed = 50;
+  const spinSpeed = 1;
 
   var mouse = { x: 0, y: 0 }, mouseOnDown = { x: 0, y: 0 };
   var rotation = { x: 0, y: 0 },
@@ -92,6 +93,7 @@ DAT.Globe = function(container, opts) {
   let evCache = new Array();
   let prevDiff = -1;
   let prevTime = 0;
+  let shouldAutoSpin = true;
 
 
   function init() {
@@ -163,7 +165,7 @@ DAT.Globe = function(container, opts) {
     container.addEventListener('pointercancel', onPointerUp, false);
     container.addEventListener('pointerout', onPointerUp, false);
     container.addEventListener('pointerleave', onPointerUp, false);
-    
+
 
     container.addEventListener('touchstart', onTouchStart, false);
 
@@ -293,9 +295,9 @@ DAT.Globe = function(container, opts) {
     container.addEventListener('touchend', onTouchEnd, false);
   }
 
-  function onPointerDown(event) { 
+  function onPointerDown(event) {
     event.preventDefault();
-  
+
     evCache.push(event);
 
     if (evCache.length === 2) {
@@ -311,9 +313,11 @@ DAT.Globe = function(container, opts) {
     targetOnDown.y = target.y;
 
     container.style.cursor = 'move';
+    shouldAutoSpin = false;
   }
 
   function onPointerMove(event) {
+    shouldAutoSpin = false;
     for (var i = 0; i < evCache.length; i++) {
       if (event.pointerId == evCache[i].pointerId) {
          evCache[i] = event;
@@ -323,7 +327,7 @@ DAT.Globe = function(container, opts) {
 
     const curTime = event.timeStamp;
     const timeDiff = curTime - prevTime;
-    
+
     // Two finger moving
     if (evCache.length === 2) {
       let curDiff = Math.abs(evCache[0].clientX - evCache[1].clientX);
@@ -346,7 +350,6 @@ DAT.Globe = function(container, opts) {
       mouse.y = event.clientY;
 
       var zoomDamp = distance/1000;
-
       target.x = targetOnDown.x + (mouse.x - mouseOnDown.x) * 0.005 * zoomDamp;
       target.y = targetOnDown.y + (mouse.y - mouseOnDown.y) * 0.005 * zoomDamp;
 
@@ -360,9 +363,10 @@ DAT.Globe = function(container, opts) {
     // Empty Cache
     evCache = [];
     container.style.cursor = 'auto';
+    shouldAutoSpin = true;
   }
 
-  
+
   function onTouchEnd(event) {
     container.removeEventListener('touchmove', onTouchMove, false);
     container.removeEventListener('touchend', onTouchEnd, false)
@@ -392,7 +396,7 @@ DAT.Globe = function(container, opts) {
 
   function onWindowResize( event ) {
     camera.aspect = (container.offsetWidth || window.innerWidth) / container.offsetHeight;
-    
+
     camera.updateProjectionMatrix();
     renderer.setSize( container.offsetWidth || window.innerWidth, container.offsetHeight );
   }
@@ -410,6 +414,9 @@ DAT.Globe = function(container, opts) {
 
   function render() {
     zoom(curZoomSpeed);
+    if (shouldAutoSpin) {
+      target.x = target.x + 0.002;
+    }
     rotation.x += (target.x - rotation.x) * 0.1;
     rotation.y += (target.y - rotation.y) * 0.1;
     distance += (distanceTarget - distance) * 0.3;
@@ -463,4 +470,3 @@ DAT.Globe = function(container, opts) {
   return this;
 
 };
-
