@@ -68,7 +68,7 @@ const processData = (dataObjArr, date, isUS) => {
     const lat = obj['Lat'];
     const long = isUS ? obj['Long_'] : obj['Long'];
     const confimedCases = obj[dateStr]
-    data = data.concat([parseFloat(lat), parseFloat(long), confimedCases*0.000005])
+    data = data.concat([parseFloat(lat), parseFloat(long), confimedCases*0.000001])
   })
   return data
 }
@@ -77,17 +77,11 @@ const onDateChange = () => {
   const chosenDate = document.querySelector('#chosen-date');
   const date = new Date(chosenDate.value);
 
-  setDateSpan(date);
   fetchDataAndRender(date)
 }
 
 const fetchDataAndRender = (date) => {
-  const container = document.querySelector("#globe-container");
-  const opts = {
-    imgDir: './',
-    colorFn: colorFunc
-  }
-  const globe = new DAT.Globe(container, opts)
+
 
   fetch(`https://covid-server.dawei.io/cases/confirmed?ts=${date.getTime()}`)
   .then(response => response.json())
@@ -99,6 +93,7 @@ const fetchDataAndRender = (date) => {
     const globalData = processData(globalResponse, date, false);
     const combinedData = [date.toUTCString(), [...usData, ...globalData]];
 
+    globe.removeAllData();
     globe.addData( combinedData[1], {format: 'magnitude', name: combinedData[0]} );
 
     // Create the geometry
@@ -107,6 +102,15 @@ const fetchDataAndRender = (date) => {
     globe.animate();
   })
 }
+
+
+const container = document.querySelector("#globe-container");
+const opts = {
+  imgDir: './',
+  animated: true,
+  colorFn: colorFunc
+}
+const globe = new DAT.Globe(container, opts)
 
 const date = new Date("2023-03-09");
 

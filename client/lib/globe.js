@@ -117,7 +117,6 @@ DAT.Globe = function(container, opts) {
     uniforms['texture'].value = THREE.ImageUtils.loadTexture(imgDir+'world.jpg');
 
     material = new THREE.ShaderMaterial({
-
           uniforms: uniforms,
           vertexShader: shader.vertexShader,
           fragmentShader: shader.fragmentShader
@@ -202,6 +201,7 @@ DAT.Globe = function(container, opts) {
     if (opts.animated) {
       if (this._baseGeometry === undefined) {
         this._baseGeometry = new THREE.Geometry();
+
         for (i = 0; i < data.length; i += step) {
           lat = data[i];
           lng = data[i + 1];
@@ -234,6 +234,15 @@ DAT.Globe = function(container, opts) {
     }
 
   };
+
+  function removeAllData() {
+    if (this.points !== undefined) {
+      this.scene.remove(this.points);
+      this.points.geometry.dispose();
+      this.points.material.dispose();
+      this.points = undefined;
+    }
+  }
 
   function createPoints() {
     if (this._baseGeometry !== undefined) {
@@ -463,6 +472,7 @@ DAT.Globe = function(container, opts) {
   });
 
   this.addData = addData;
+  this.removeAllData = removeAllData;
   this.createPoints = createPoints;
   this.renderer = renderer;
   this.scene = scene;
