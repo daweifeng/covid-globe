@@ -6,16 +6,19 @@
 </div>
 
 ## Multifingers support
+
 This app natively supports multifinger gestures.
 You can pinch your screen to zoom in and out.
 
 ## Data
 
-The time series Data is auto collected every day at 00:01(UTC) from 
+The time series Data is auto collected every day at 00:01(UTC) from
 
 <a href="https://github.com/CSSEGISandData/COVID-19">COVID-19 Data Repository by the Center for Systems Science and Engineering (CSSE) at Johns Hopkins University</a>
 
 Collected data is parsed and stored on my own MongoDB cluster.
+
+**Note: On March 10, 2023, the Johns Hopkins Coronavirus Resource Center ceased its collecting and reporting of global COVID-19 data. Covid-globe will only display data by March 10, 2023**
 
 ## API
 
@@ -25,24 +28,25 @@ Endpoint: https://covid-server.dawei.io/cases/confirmed
 
 ### Request
 
-````
+```
 GET https://covid-server.dawei.io/cases/confirmed?ts={timestamp}
 
 timestamp: the UTC timestamp of the date
-````
+```
+
 ### Response
 
 ```json
 {
   "usResponse":[
-    { 
+    {
       "_id": "5f123b812c72e9002e2db473",
       "Province_State": "American Samoa",
       "Country_Region": "US",
       "Lat": "-14.271",
       "Long_": "-170.132",
       // Specific date from request
-      "7/16/20": "0" 
+      "7/16/20": "0"
     },
     ...
   ],
