@@ -1,22 +1,22 @@
-import { Service } from "egg";
-import { CSVParser } from "../util/CSVParser";
-import Mongo from "./Mongo";
+import { Service } from 'egg';
+import { CSVParser } from '../util/CSVParser';
+import Mongo from './Mongo';
 
 export default class Data extends Service {
   dataURLs = {
-    us: "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv",
+    us: 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv',
     global:
-      "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv",
+      'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv',
   };
 
   public async fetch() {
     // fetch U.S. time series data
     const responseUS = await this.ctx.curl(this.dataURLs.us, {
-      dataType: "text",
+      dataType: 'text',
     });
     // fetch global time series data
     const responseGolbal = await this.ctx.curl(this.dataURLs.global, {
-      dataType: "text",
+      dataType: 'text',
     });
 
     return {
@@ -29,7 +29,7 @@ export default class Data extends Service {
     data: string,
     db: string,
     collection: string,
-    shouldAddLocation?: boolean
+    shouldAddLocation?: boolean,
   ) {
     const csvParser = new CSVParser();
     const csv = csvParser.parse(data);
@@ -39,17 +39,17 @@ export default class Data extends Service {
       collection,
       csv.data.slice(1, csv.data.length),
       csv.header,
-      shouldAddLocation
+      shouldAddLocation,
     );
   }
 
   public async getCasesByDate(date: Date) {
-    const collectionDate = `7142023`;
+    const collectionDate = '7142023';
     const dateStr = `${date.getUTCMonth() + 1}/${date.getUTCDate()}/${
       date.getUTCFullYear() - 2000
     }`;
     const usResponse = await Mongo.client
-      .db("covid")
+      .db('covid')
       .collection(`US${collectionDate}`)
       .find()
       .project({
@@ -62,12 +62,12 @@ export default class Data extends Service {
       .toArray();
 
     const globalResponse = await Mongo.client
-      .db("covid")
+      .db('covid')
       .collection(`GLOBAL${collectionDate}`)
       .find()
       .project({
-        "Province/State": 1,
-        "Country/Region": 1,
+        'Province/State': 1,
+        'Country/Region': 1,
         Lat: 1,
         Long: 1,
         [dateStr]: 1,
@@ -94,14 +94,14 @@ export default class Data extends Service {
     // TODO: Check the country of the location
     // If it is not US, display the country data
     const usResponse = await Mongo.client
-      .db("covid")
+      .db('covid')
       .collection(`US${collectionDate}`)
       .find({
         location: {
           $near: {
             $geometry: {
-              type: "Point",
-              coordinates: [long, lat],
+              type: 'Point',
+              coordinates: [ long, lat ],
             },
             $maxDistance: 50000, // 50km
           },
@@ -149,14 +149,14 @@ export default class Data extends Service {
 
     // TODO: Cross reference FCC's county data
     const usResponse = await Mongo.client
-      .db("covid")
+      .db('covid')
       .collection(`US${collectionDate}`)
       .find({
         location: {
           $near: {
             $geometry: {
-              type: "Point",
-              coordinates: [long, lat],
+              type: 'Point',
+              coordinates: [ long, lat ],
             },
             $maxDistance: 50000, // 50km
           },
