@@ -77,12 +77,10 @@ const onDateChange = () => {
   const chosenDate = document.querySelector('#chosen-date');
   const date = new Date(chosenDate.value);
 
-  fetchDataAndRender(date)
+  debouncedFetchDataAndRender(date)
 }
 
 const fetchDataAndRender = (date) => {
-
-
   fetch(`https://covid-server.dawei.io/cases/confirmed?ts=${date.getTime()}`)
   .then(response => response.json())
   .then(data => {
@@ -102,6 +100,21 @@ const fetchDataAndRender = (date) => {
     globe.animate();
   })
 }
+
+const debounce = (func, wait) => {
+  let timeoutId = null
+  return function(...args) {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+    const originalThis = this;
+    timeoutId = setTimeout(() => {
+      func.apply(originalThis, [...args])
+    }, wait);
+  }
+}
+
+const debouncedFetchDataAndRender = debounce(fetchDataAndRender, 500);
 
 
 const container = document.querySelector("#globe-container");
