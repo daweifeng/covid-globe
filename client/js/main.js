@@ -12,11 +12,14 @@ const setDatePicker = (date) => {
 }
 
 const setColorInfo = () => {
+  const badDiv = document.querySelector(".BAD");
   const severeDiv = document.querySelector('.SEVERE');
   const dangerDiv = document.querySelector('.DANGER');
   const moderateDiv = document.querySelector('.MODERATE');
   const mileDiv = document.querySelector('.MILE');
   const lowDiv = document.querySelector('.LOW');
+
+  badDiv.style.backgroundColor = `hsl(${SEVERE},100%,20%)`;
   severeDiv.style.backgroundColor = `hsl(${SEVERE},100%,50%)`;
   dangerDiv.style.backgroundColor = `hsl(${DANGER},100%,50%)`;
   moderateDiv.style.backgroundColor = `hsl(${MODERATE},100%,50%)`;
@@ -27,10 +30,13 @@ const setColorInfo = () => {
 
 const colorFunc = (x) => {
   const c = new THREE.Color();
-  x = x * 200000
-  // console.log(x)
+  x = x / 0.000001;
 
   switch (true) {
+
+    case x>1000000:
+      c.setHSL( SEVERE/360, 1, 0.2)
+    break;
 
     case x>500000:
       c.setHSL( SEVERE/360, 1, 0.5)
